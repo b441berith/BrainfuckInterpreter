@@ -3,15 +3,13 @@ package com.brainfuck.operations;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.brainfuck.Operation;
-
 /**
  * User: ashuiskov
  * Date: 18/03/2012
  * Time: 16:57
  */
 public class BrainfuckOperationFactory {
-    private Map<Character, BrainfuckOperation> operationsMap = new HashMap<Character, BrainfuckOperation>()
+    private static final Map<Character, BrainfuckOperation> operationsMap = new HashMap<Character, BrainfuckOperation>()
     {
         {
             put(BrainfuckOperationNames.DECREMENT_CURRENT_DATA_POINTER_CELL_VALUE, new DecrementCurrentDataPointerCellValueOperation());
@@ -25,7 +23,20 @@ public class BrainfuckOperationFactory {
         }
     };
 
-    public BrainfuckOperation createOperation(char operationCode) {
+    private static final Map<Class<? extends BrainfuckOperation>, Character> reverseOperationsMap = new HashMap<Class<? extends BrainfuckOperation>, Character>() {
+        {
+            put(DecrementCurrentDataPointerCellValueOperation.class, BrainfuckOperationNames.DECREMENT_CURRENT_DATA_POINTER_CELL_VALUE);
+            put(DecrementDataPointerOperation.class, BrainfuckOperationNames.DECREMENT_DATA_POINTER);
+            put(EndLoopOperation.class, BrainfuckOperationNames.END_LOOP);
+            put(IncrementCurrentDataPointerCellValueOperation.class, BrainfuckOperationNames.INCREMENT_CURRENT_DATA_POINTER_CELL_VALUE);
+            put(IncrementDataPointerOperation.class, BrainfuckOperationNames.INCREMENT_DATA_POINTER);
+            put(PrintCurrentDataCellValue.class, BrainfuckOperationNames.PRINT_CURRENT_DATA_CELL_VAUE);
+            put(SetDataCellValueFromInputStreamOperation.class, BrainfuckOperationNames.SET_DATA_CELL_VALUE_FROM_INPUT_STREAM);
+            put(StartLoopOperation.class, BrainfuckOperationNames.START_LOOP);
+        }
+    };
+
+    public static final BrainfuckOperation createOperation(char operationCode) {
         if (operationsMap.containsKey(operationCode)) {
             return operationsMap.get(operationCode);
         } else {
@@ -33,16 +44,7 @@ public class BrainfuckOperationFactory {
         }
     }
 
-    public Character getOperatonCode(BrainfuckOperation operation) {
-        //TODO improve (bidirectional map?)
-        if (operation instanceof  DecrementCurrentDataPointerCellValueOperation) return BrainfuckOperationNames.DECREMENT_CURRENT_DATA_POINTER_CELL_VALUE;
-        if (operation instanceof  DecrementDataPointerOperation) return BrainfuckOperationNames.DECREMENT_DATA_POINTER;
-        if (operation instanceof  EndLoopOperation) return BrainfuckOperationNames.END_LOOP;
-        if (operation instanceof  IncrementDataPointerOperation) return BrainfuckOperationNames.INCREMENT_DATA_POINTER;
-        if (operation instanceof  IncrementCurrentDataPointerCellValueOperation) return BrainfuckOperationNames.INCREMENT_CURRENT_DATA_POINTER_CELL_VALUE;
-        if (operation instanceof  PrintCurrentDataCellValue) return BrainfuckOperationNames.PRINT_CURRENT_DATA_CELL_VAUE;
-        if (operation instanceof  SetDataCellValueFromInputStreamOperation) return BrainfuckOperationNames.SET_DATA_CELL_VALUE_FROM_INPUT_STREAM;
-        if (operation instanceof  StartLoopOperation) return BrainfuckOperationNames.START_LOOP;
-        return null;
+    public static final Character getOperatonCode(BrainfuckOperation operation) {
+        return reverseOperationsMap.get(operation.getClass());
     }
 }

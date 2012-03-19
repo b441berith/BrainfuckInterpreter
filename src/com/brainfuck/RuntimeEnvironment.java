@@ -6,5 +6,5 @@ package com.brainfuck;
  * Time: 16:05
  */
 public interface RuntimeEnvironment<P extends AbstractProgram> {
-    public void runProgram(P program);
+    public void runProgram();
 }

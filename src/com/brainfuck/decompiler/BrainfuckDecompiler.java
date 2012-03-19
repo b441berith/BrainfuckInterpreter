@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.brainfuck.BrainfuckProgram;
 import com.brainfuck.Decompiler;
-import com.brainfuck.Operation;
 import com.brainfuck.exceptions.DecompilationException;
 import com.brainfuck.operations.BrainfuckOperation;
 import com.brainfuck.operations.BrainfuckOperationFactory;
@@ -20,10 +19,8 @@ import com.brainfuck.operations.BrainfuckOperationFactory;
  * Time: 16:46
  */
 public class BrainfuckDecompiler implements Decompiler<BrainfuckProgram> {
-    private BrainfuckOperationFactory operationFactory;
+    public BrainfuckDecompiler() {
 
-    public BrainfuckDecompiler(BrainfuckOperationFactory operationFactory) {
-        this.operationFactory = operationFactory;
     }
 
     public BrainfuckProgram decompile(InputStream inputStream) throws DecompilationException {
@@ -49,7 +46,7 @@ public class BrainfuckDecompiler implements Decompiler<BrainfuckProgram> {
         String result = out.toString();
         List<BrainfuckOperation> operations = new ArrayList<BrainfuckOperation>();
         for (char ch : result.toCharArray()) {
-            BrainfuckOperation operation = operationFactory.createOperation(ch);
+            BrainfuckOperation operation = BrainfuckOperationFactory.createOperation(ch);
             if (operation != null) {
                 operations.add(operation);
             }

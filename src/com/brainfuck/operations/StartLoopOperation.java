@@ -9,6 +9,13 @@ import com.brainfuck.BrainfuckRuntimeEnvironment;
  */
 public class StartLoopOperation implements BrainfuckOperation{
     public void execute(BrainfuckRuntimeEnvironment runtimeEnvironment) {
-        //TODO impl
+        int dataPointerValue = runtimeEnvironment.getDataPointerValue();
+        if (dataPointerValue == 0) {
+            int instructionPointer = runtimeEnvironment.getNextEnclosingEndLoopIndex();
+            instructionPointer++;
+            runtimeEnvironment.setInstructionPointer(instructionPointer);
+        } else {
+            runtimeEnvironment.incrementInstructionPointer();
+        }
     }
 }

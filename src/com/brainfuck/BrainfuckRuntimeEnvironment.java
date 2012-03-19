@@ -5,6 +5,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.brainfuck.operations.BrainfuckOperation;
+import com.brainfuck.operations.EndLoopOperation;
+import com.brainfuck.operations.StartLoopOperation;
+
 /**
  * User: ashuiskov
  * Date: 18/03/2012
@@ -16,18 +20,20 @@ public class BrainfuckRuntimeEnvironment implements RuntimeEnvironment<Brainfuck
     private int instructionPointer;
     private InputStream inputStream;
     private OutputStream outputStream;
+    private List<BrainfuckOperation> machineOperations;
 
     public static final int DEFAULT_DATA_SIZE = 10;
 
-    public BrainfuckRuntimeEnvironment(InputStream inputStream, OutputStream outputStream) {
+    public BrainfuckRuntimeEnvironment(InputStream inputStream, OutputStream outputStream, BrainfuckProgram program) {
         this.dataPointer = 0;
         this.data = new ArrayList<Integer>(DEFAULT_DATA_SIZE);
         for (int i = 0; i < DEFAULT_DATA_SIZE; i++) {
-            this.data.set(i, 0);
+            this.data.add(0);
         }
         this.instructionPointer = 0;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
+        this.machineOperations = program.getOperations();
     }
 
     public InputStream getInputStream() {
@@ -95,8 +101,40 @@ public class BrainfuckRuntimeEnvironment implements RuntimeEnvironment<Brainfuck
         setDataPointerValue(--value);
     }
 
-    public void runProgram(BrainfuckProgram program) {
-        for (Operation<BrainfuckRuntimeEnvironment> operation : program.getOperations()) {
+    public int getNextEnclosingEndLoopIndex() {
+        int balance = 1;
+        int pointer = instructionPointer+1;
+        while (balance != 0) {
+            Operation operation = machineOperations.get(pointer);
+            if (operation instanceof EndLoopOperation) {
+                balance--;
+            } else if (operation instanceof StartLoopOperation) {
+                balance++;
+            }
+            pointer++;
+        }
+        return pointer;
+    }
+
+    public int getPrevEnclosingStartLoopIndex() {
+        int balance = -1;
+        int pointer = instructionPointer-1;
+        while (balance != 0) {
+            Operation operation = machineOperations.get(pointer);
+            if (operation instanceof EndLoopOperation) {
+                balance--;
+            } else if (operation instanceof StartLoopOperation) {
+                balance++;
+            }
+            pointer--;
+        }
+        return pointer;
+    }
+
+    public void runProgram() {
+        this.instructionPointer = 0;
+        while (instructionPointer >= 0 && instructionPointer < machineOperations.size()) {
+            Operation<BrainfuckRuntimeEnvironment> operation = machineOperations.get(instructionPointer);
             operation.execute(this);
         }
     }

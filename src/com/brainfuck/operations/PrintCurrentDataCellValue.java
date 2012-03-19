@@ -15,7 +15,8 @@ public class PrintCurrentDataCellValue implements BrainfuckOperation {
         final OutputStream outputStream = runtimeEnvironment.getOutputStream();
         if (outputStream != null) {
             try {
-                outputStream.write(runtimeEnvironment.getDataPointerValue());
+                final int dataPointerValue = runtimeEnvironment.getDataPointerValue();
+                outputStream.write(dataPointerValue);
             } catch (IOException e) {
                 throw new RuntimeException("Can't write to output stream");
             }
