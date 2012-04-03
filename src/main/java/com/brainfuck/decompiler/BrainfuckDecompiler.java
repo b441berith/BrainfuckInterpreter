@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.brainfuck.BrainfuckProgram;
-import com.brainfuck.Decompiler;
 import com.brainfuck.operations.BrainfuckOperation;
 import com.brainfuck.operations.BrainfuckOperationFactory;
+import com.processor.Decompiler;
 import com.processor.exceptions.DecompilationException;
 
 /**
